@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_login/bloc/authentication_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:bloc_login/hotel/hotel_map_page.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -9,31 +11,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GoogleMapController mapController;
-  final Set<Marker> _markers = {};
-  static LatLng _center =
-      const LatLng(19.1334, 72.9133); //Coordinates Format :- N,E
-  LatLng _currentMapPosition = _center;
-  void _onCameraMove(CameraPosition position) {
-    _currentMapPosition = position.target;
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  void _onAddMarkerButtonPressed() {
-    setState(() {
-      _markers.add(Marker(
-          markerId: MarkerId(_currentMapPosition.toString()),
-          position: _currentMapPosition,
-          infoWindow: InfoWindow(
-            title: 'Marked Place',
-            // snippet: 'Welcome to IIT-B',
-          ),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)));
-    });
+  void restaurantMap(BuildContext ctx) {
+    Navigator.of(ctx).push(
+      MaterialPageRoute(builder: (_) {
+        return HotelMapPage();
+      }),
+    );
   }
 
   @override
@@ -42,74 +25,221 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         title: Text('Wander About'),
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(left: 30.0),
-              child: Text(
-                'Welcome',
-                style: TextStyle(
-                  fontSize: 24.0,
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Wander About',
+                  style: TextStyle(fontSize: 25),
                 ),
               ),
             ),
-            Stack(children: <Widget>[
-              Container(
-                height: 600,
-                child: GoogleMap(
-                  markers: _markers,
-                  onCameraMove: _onCameraMove,
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: _center,
-                    zoom: 17.0,
+            ListTile(
+              //Movies
+              leading: Icon(
+                IconData(0xe40d, fontFamily: 'MaterialIcons'),
+              ),
+              title: Text(
+                'Movies',
+                style: TextStyle(fontSize: 17),
+              ),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                IconData(0xe532, fontFamily: 'MaterialIcons'),
+              ),
+              title: Text(
+                'Restaurants',
+                style: TextStyle(fontSize: 17),
+              ),
+              onTap: () => restaurantMap(context),
+            ),
+            ListTile(
+                leading: Icon(
+                  IconData(0xe396, fontFamily: 'MaterialIcons'),
+                ),
+                title: Text(
+                  'Hospitals',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.pop(context);
+                }),
+            ListTile(
+                leading: Icon(
+                  IconData(0xe3b3, fontFamily: 'MaterialIcons'),
+                ),
+                title: Text(
+                  'Log out',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {
+                  // Navigator.pop(context);
+                  BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+                }),
+          ],
+        ),
+      ),
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.all(30.0),
+                child: Text(
+                  'Welcome',
+                  style: TextStyle(
+                    fontSize: 48.0,
                   ),
                 ),
               ),
-              Container(
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: FloatingActionButton(
-                    onPressed: _onAddMarkerButtonPressed,
-                    materialTapTargetSize: MaterialTapTargetSize.padded,
-                    backgroundColor: Colors.green,
-                    child: const Icon(Icons.map, size: 30.0),
-                  ),
-                ),
-              ),
-            ]),
-            Padding(
-              padding: EdgeInsets.fromLTRB(34.0, 20.0, 0.0, 0.0),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                height: MediaQuery.of(context).size.width * 0.1,
-                child: ElevatedButton(
-                    child: Text(
-                      'Logout',
-                      style: TextStyle(
-                        fontSize: 24,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                InkWell(
+                  onTap: () => {},
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          //color: Colors.blueGrey,
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage('assets/Logos/movies.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        height: 90,
+                        width: 90,
+                        alignment: Alignment.center,
                       ),
-                    ),
-                    onPressed: () {
-                      BlocProvider.of<AuthenticationBloc>(context)
-                          .add(LoggedOut());
-                    },
-
-                    /* shape: StadiumBorder(
-                    side: BorderSide(
-                      color: Colors.black,
-                      width: 2,
-                    ),
-                  ),*/
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty
-                            .all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(color: Colors.deepOrange))))),
-              ),
+                      Text(
+                        'Movies',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 100,
+                  width: 20,
+                ),
+                InkWell(
+                  onTap: () => restaurantMap(context),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          // color: Colors.amber,
+                          // color: Colors.blueGrey,
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage('assets/Logos/hotel.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        height: 90,
+                        width: 90,
+                        alignment: Alignment.center,
+                      ),
+                      Text(
+                        'Restaurants',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                InkWell(
+                  onTap: () => {},
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          //color: Colors.blueGrey,
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage('assets/Logos/hospital.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        height: 90,
+                        width: 90,
+                        alignment: Alignment.center,
+                      ),
+                      Text(
+                        'Hospitals',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 100,
+                  width: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    BlocProvider.of<AuthenticationBloc>(context)
+                        .add(LoggedOut());
+                  },
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          // color: Colors.blueGrey,
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage('assets/Logos/logout.png'),
+                            fit: BoxFit.fill,
+                          ),
+                          //color: Colors.amber,
+                        ),
+                        height: 90,
+                        width: 90,
+                        alignment: Alignment.center,
+                      ),
+                      Text(
+                        'Logout',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
