@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/authentication_bloc.dart';
+import 'package:bloc_login/bloc/authentication_bloc.dart';
 
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../hotel/hotel_map_page.dart';
-import '../movies/movies.dart';
+import 'package:bloc_login/hotel/hotel_map_page.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -16,14 +15,6 @@ class _MyAppState extends State<MyApp> {
     Navigator.of(ctx).push(
       MaterialPageRoute(builder: (_) {
         return HotelMapPage();
-      }),
-    );
-  }
-
-  void MovieMap(BuildContext ctx) {
-    Navigator.of(ctx).push(
-      MaterialPageRoute(builder: (_) {
-        return MoviesMap();
       }),
     );
   }
@@ -60,7 +51,12 @@ class _MyAppState extends State<MyApp> {
                 'Movies',
                 style: TextStyle(fontSize: 17),
               ),
-              onTap: () => MovieMap(context),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               leading: Icon(
@@ -122,7 +118,7 @@ class _MyAppState extends State<MyApp> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 InkWell(
-                  onTap: () => MovieMap(context),
+                  onTap: () => {},
                   child: Column(
                     children: <Widget>[
                       Container(
